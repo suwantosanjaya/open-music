@@ -1,10 +1,10 @@
 const mapDBToModel = ({
     id, title, year, performer, genre, duration, 
-    created_at, 
+    inserted_at, 
     updated_at,
 }) => ({
     id, title, year, performer, genre, duration,
-    createdAt: created_at,
+    insertedAt: inserted_at,
     updatedAt: updated_at,
 });
 
