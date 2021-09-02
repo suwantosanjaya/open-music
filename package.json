@@ -1,0 +1,23 @@
+{
+  "name": "open-music",
+  "version": "1.0.0",
+  "description": "Open Music",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "music",
+    "open",
+    "song",
+    "sing"
+  ],
+  "author": "Suwanto Sanjaya",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.1.5",
+    "joi": "^17.4.2",
+    "nanoid": "^3.1.25"
+  }
+}
