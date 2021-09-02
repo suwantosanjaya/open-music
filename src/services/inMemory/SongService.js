@@ -3,65 +3,73 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class SongService {
-    constructor() {
-        this._songs = [];
+  constructor() {
+    this.songs = [];
+  }
+
+  addSong({
+    title, year, performer, genre, duration,
+  }) {
+    const id = `song-${nanoid(16)}`;
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
+
+    const newSong = {
+      id, title, year, performer, genre, duration, createdAt, updatedAt,
+    };
+
+    this.songs.push(newSong);
+
+    const isSuccess = this.songs.filter((song) => song.id === id).length > 0;
+
+    if (!isSuccess) {
+      throw new InvariantError('Lagu gagal ditambahkan');
     }
 
-    addSong({ title, year, performer, genre, duration }) {
-        const id = "song-" + nanoid(16);
-        const createdAt = new Date().toISOString();
-        const updatedAt = createdAt;
+    return id;
+  }
 
-        const newSong = {
-            id, title, year, performer, genre, duration, createdAt, updatedAt,
-        };
+  getSongs() {
+    return this.songs;
+  }
 
-        this._songs.push(newSong);
+  getSongById(id) {
+    const song = this.songs.filter((n) => n.id === id)[0];
+    if (!song) {
+      throw new NotFoundError('Lagu tidak ditemukan');
+    }
+    return song;
+  }
 
-        const isSuccess = this._songs.filter((song) => song.id === id).length > 0;
+  editSongById(id, {
+    title, year, performer, genre, duration,
+  }) {
+    const index = this.songs.findIndex((song) => song.id === id);
 
-        if (!isSuccess) {
-            throw new InvariantError('Lagu gagal ditambahkan');
-        }
-
-        return id;
+    if (index === -1) {
+      throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
     }
 
-    getSongs() {
-        return this._songs;
+    const updatedAt = new Date().toISOString();
+
+    this.songs[index] = {
+      ...this.songs[index],
+      title,
+      year,
+      performer,
+      genre,
+      duration,
+      updatedAt,
+    };
+  }
+
+  deleteSongById(id) {
+    const index = this.songs.findIndex((song) => song.id === id);
+    if (index === -1) {
+      throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
     }
-
-    getSongById(id) {
-        const song = this._songs.filter((n) => n.id === id)[0];
-        if (!song) {
-            throw new NotFoundError('Lagu tidak ditemukan');
-        }
-        return song;
-    }
-
-    editSongById(id, { title, year, performer, genre, duration }) {
-        const index = this._songs.findIndex((song) => song.id === id);
-
-        if (index === -1) {
-            throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
-        }
-
-        const updatedAt = new Date().toISOString();
-
-        this._songs[index] = {
-            ...this._songs[index],
-            title, year, performer, genre, duration,
-            updatedAt,
-        };
-    }
-
-    deleteSongById(id) {
-        const index = this._songs.findIndex((song) => song.id === id);
-        if (index === -1) {
-            throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
-        }
-        this._songs.splice(index, 1);
-    }
+    this.songs.splice(index, 1);
+  }
 }
 
 module.exports = SongService;

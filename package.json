@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node ./src/server.js",
     "start-dev": "node ./src/server.js",
-    "migrate": "node-pg-migrate"
+    "migrate": "node-pg-migrate",
+    "lint": "eslint ./src"
   },
   "keywords": [
     "music",
@@ -23,5 +24,15 @@
     "nanoid": "^3.1.25",
     "node-pg-migrate": "^5.10.0",
     "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-config-xo": "^0.38.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0"
   }
 }
