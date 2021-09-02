@@ -12,11 +12,13 @@ class SongHandler {
         this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
     }
 
-    postSongHandler(request, h) {
+    async postSongHandler(request, h) {
         try {
             this._validator.validateSongPayload(request.payload);
             const { title = 'untitled', year, performer, genre, duration } = request.payload;
-            const songId = this._service.addSong({ title, year, performer, genre, duration });
+            //const songId = this._service.addSong({ title, year, performer, genre, duration });
+
+            const songId = await this._service.addSong({ title, year, performer, genre, duration });
 
             const response = h.response({
                 status: 'success',
@@ -48,8 +50,9 @@ class SongHandler {
         }
     }
 
-    getSongHandler() {
-        const songs = this._service.getSongs();
+    async getSongHandler() {
+        //const songs = this._service.getSongs();
+        const songs = await this._service.getSongs();
         return {
             status: 'success',
             data: {
@@ -58,10 +61,11 @@ class SongHandler {
         };
     }
 
-    getSongByIdHandler(request, h) {
+    async getSongByIdHandler(request, h) {
         try {
             const { id } = request.params;
-            const song = this._service.getSongById(id);
+            //const song = this._service.getSongById(id);
+            const song = await this._service.getSongById(id);
             return {
                 status: 'success',
                 data: {
@@ -89,12 +93,13 @@ class SongHandler {
         }
     }
 
-    putSongByIdHandler(request, h) {
+    async putSongByIdHandler(request, h) {
         try {
             this._validator.validateSongPayload(request.payload);
             const { id } = request.params;
 
-            this._service.editSongById(id, request.payload);
+            //this._service.editSongById(id, request.payload);
+            await this._service.editSongById(id, request.payload);
 
             return {
                 status: 'success',
@@ -121,10 +126,11 @@ class SongHandler {
         }
     }
 
-    deleteSongByIdHandler(request, h) {
+    async deleteSongByIdHandler(request, h) {
         try {
             const { id } = request.params;
-            this._service.deleteSongById(id);
+            //this._service.deleteSongById(id);
+            await this._service.deleteSongById(id);
             return {
                 status: 'success',
                 message: 'Lagu berhasil dihapus',
