@@ -2,7 +2,7 @@
 
 exports.shorthands = undefined;
 
-const songsTable = {
+const table = {
   name: 'songs',
   columns: {
     id: { type: 'VARCHAR(32)', primaryKey: true },
@@ -17,9 +17,9 @@ const songsTable = {
 };
 
 exports.up = (pgm) => {
-  pgm.createTable(songsTable.name, songsTable.columns);
+  pgm.createTable(table.name, table.columns);
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable(songsTable.name);
+  pgm.dropTable(table.name);
 };
