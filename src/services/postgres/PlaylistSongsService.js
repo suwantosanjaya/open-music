@@ -32,7 +32,8 @@ class PlaylistSongsService {
                     INNER JOIN songs s ON (ps.song_id = s.id) 
                     INNER JOIN playlists p ON (ps.playlist_id = p.id) 
                     INNER JOIN users u ON (p.owner = u.id) 
-              WHERE p.id = $1 AND p.owner = $2`,
+                    LEFT JOIN collaborations c ON (p.id = c.playlist_id)
+              WHERE p.id = $1 AND (p.owner = $2 OR c.user_id = $2)`,
       values: [playlistId, owner],
     };
     const result = await this.pool.query(query);
@@ -53,10 +54,13 @@ class PlaylistSongsService {
     }
   }
 
-  async verifyPlaylistOwner(id, owner) {
+  async verifyPlaylistOwner(id, ownerOrCollab) {
     const query = {
-      text: 'SELECT owner FROM playlists WHERE id = $1 and owner = $2',
-      values: [id, owner],
+      text: `SELECT owner 
+              FROM playlists p LEFT JOIN collaborations c 
+                ON (p.id = c.playlist_id) 
+              WHERE p.id = $1 and (p.owner = $2 OR c.user_id = $2)`,
+      values: [id, ownerOrCollab],
     };
     const result = await this.pool.query(query);
     if (!result.rows.length) {

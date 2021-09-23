@@ -1,5 +1,5 @@
+/* eslint-disable camelcase */
 const mapDBToModel = ({
-  // eslint-disable-next-line camelcase
   id, title, year, performer, genre, duration, inserted_at, updated_at,
 }) => ({
   id,
