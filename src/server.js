@@ -32,7 +32,6 @@ const PlaylistSongsValidator = require('./validator/playlistsongs');
 // collaborations
 const collaborations = require('./api/collaborations');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
-// const PlaylistSongsValidator = require('./validator/playlistsongs');
 
 const init = async () => {
   const songsService = new SongsService();
