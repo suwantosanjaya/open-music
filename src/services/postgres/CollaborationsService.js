@@ -3,9 +3,10 @@ const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const ForbiddenError = require('../../exceptions/ForbiddenError');
 
-class PlaylistSongsService {
-  constructor() {
+class CollaborationService {
+  constructor(cacheService) {
     this.pool = new Pool();
+    this.cacheService = cacheService;
   }
 
   async addCollaboration({ playlistId, userId }) {
@@ -21,6 +22,7 @@ class PlaylistSongsService {
       throw new InvariantError('Kolaborasi gagal ditambahkan');
     }
 
+    await this.cacheService.delete(`songs:${userId}-${playlistId}`);
     return result.rows[0].id;
   }
 
@@ -35,6 +37,8 @@ class PlaylistSongsService {
     if (!result.rows.length) {
       throw new InvariantError('Kolaborasi gagal dihapus. Id tidak ditemukan');
     }
+
+    await this.cacheService.delete(`songs:${userId}-${playlistId}`);
   }
 
   async verifyPlaylistOwner(id, ownerOrCollab) {
@@ -52,4 +56,4 @@ class PlaylistSongsService {
   }
 }
 
-module.exports = PlaylistSongsService;
+module.exports = CollaborationService;

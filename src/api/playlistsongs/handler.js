@@ -18,7 +18,7 @@ class PlaylistSongsHandler {
       await this.service.verifyPlaylistOwner(playlistId, credentialId);
 
       const { songId } = request.payload;
-      await this.service.addPlaylistSong({ playlistId, songId });
+      await this.service.addPlaylistSong({ playlistId, songId, credentialId });
 
       const response = h.response({
         status: 'success',
@@ -89,7 +89,7 @@ class PlaylistSongsHandler {
       const { id: credentialId } = request.auth.credentials;
       await this.service.verifyPlaylistOwner(playlistId, credentialId);
 
-      await this.service.deletePlaylistSongs(playlistId, songId);
+      await this.service.deletePlaylistSongs(playlistId, songId, credentialId);
       return {
         status: 'success',
         message: 'Playlist berhasil dihapus',

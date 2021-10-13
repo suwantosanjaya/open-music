@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const path = require('path');
+const Inert = require('@hapi/inert');
 
 // songs
 const songs = require('./api/songs'); // ---> ./src/api/songs/index.js
@@ -33,13 +35,29 @@ const PlaylistSongsValidator = require('./validator/playlistsongs');
 const collaborations = require('./api/collaborations');
 const CollaborationsService = require('./services/postgres/CollaborationsService');
 
+// Exports
+const exportsongs = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportsValidator = require('./validator/exports');
+
+// uploads
+const uploads = require('./api/uploads');
+const StorageService = require('./services/storage/StorageService');
+const UploadsValidator = require('./validator/uploads');
+
+// cache
+const CacheService = require('./services/redis/CacheService');
+
 const init = async () => {
+  const cacheService = new CacheService();
+
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const playlistsService = new PlaylistsService();
-  const playlistSongsService = new PlaylistSongsService();
-  const collaborationsService = new CollaborationsService();
+  const playlistSongsService = new PlaylistSongsService(cacheService);
+  const collaborationsService = new CollaborationsService(cacheService);
+  const storageService = new StorageService(path.resolve(__dirname, 'api/uploads/file/pictures'));
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -55,6 +73,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 
@@ -121,6 +142,20 @@ const init = async () => {
       plugin: collaborations,
       options: {
         service: collaborationsService,
+      },
+    },
+    {
+      plugin: exportsongs,
+      options: {
+        service: ProducerService,
+        validator: ExportsValidator,
+      },
+    },
+    {
+      plugin: uploads,
+      options: {
+        service: storageService,
+        validator: UploadsValidator,
       },
     },
   ]);
